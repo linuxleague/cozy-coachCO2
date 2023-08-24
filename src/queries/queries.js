@@ -4,15 +4,18 @@ import subYears from 'date-fns/subYears'
 
 import CozyClient, { Q } from 'cozy-client'
 
+import manifest from 'root/manifest.webapp'
 import {
   GEOJSON_DOCTYPE,
   ACCOUNTS_DOCTYPE,
-  SETTINGS_DOCTYPE
+  SETTINGS_DOCTYPE,
+  FILES_DOCTYPE
 } from 'src/doctypes'
 import { TRIPS_DISTANCE_SIMILARITY_RATIO, BICYCLING_MODE } from 'src/constants'
 
 const older30s = 30 * 1000
 const neverReload = 100000 * 1000
+const appSlug = manifest.slug
 
 // Timeseries doctype -------------
 
@@ -311,6 +314,28 @@ export const buildSettingsQuery = () => ({
   definition: Q(SETTINGS_DOCTYPE),
   options: {
     as: SETTINGS_DOCTYPE,
+    fetchPolicy: CozyClient.fetchPolicies.olderThan(neverReload)
+  }
+})
+
+// erreur sur la requete
+export const buildLastFileCreatedByCCO2Query = () => ({
+  definition: Q(FILES_DOCTYPE)
+    .where({
+      'cozyMetadata.createdByApp': appSlug
+    })
+    .partialIndex({
+      class: 'pdf'
+    })
+    .indexFields([
+      'cozyMetadata.createdByApp',
+      'class',
+      'cozyMetadata.updatedAt'
+    ])
+    .sortBy([{ 'cozyMetadata.updatedAt': 'desc' }])
+    .limitBy(1),
+  options: {
+    as: FILES_DOCTYPE,
     fetchPolicy: CozyClient.fetchPolicies.olderThan(neverReload)
   }
 })

@@ -10,7 +10,7 @@ import { I18n } from 'cozy-ui/transpiled/react/I18n'
 import MuiCozyTheme from 'cozy-ui/transpiled/react/MuiCozyTheme'
 import { BreakpointsProvider } from 'cozy-ui/transpiled/react/hooks/useBreakpoints'
 
-import { GEOJSON_DOCTYPE, SETTINGS_DOCTYPE } from 'src/doctypes'
+import { GEOJSON_DOCTYPE, SETTINGS_DOCTYPE, FILES_DOCTYPE } from 'src/doctypes'
 import AccountProvider from 'src/components/Providers/AccountProvider'
 import SelectDatesProvider from 'src/components/Providers/SelectDatesProvider'
 
@@ -32,6 +32,7 @@ const AppProviders = ({ client, lang, polyglot, children }) => {
         <CozyProvider client={client}>
           <RealTimeQueries doctype={GEOJSON_DOCTYPE} />
           <RealTimeQueries doctype={SETTINGS_DOCTYPE} />
+          <RealTimeQueries doctype={FILES_DOCTYPE} />
           <AccountProvider>
             <SelectDatesProvider>
               <I18n lang={lang} polyglot={polyglot}>

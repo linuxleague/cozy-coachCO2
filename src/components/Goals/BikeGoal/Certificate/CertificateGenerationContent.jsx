@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 
 import Typography from 'cozy-ui/transpiled/react/Typography'
@@ -15,13 +15,35 @@ import FileTypePdfIcon from 'cozy-ui/transpiled/react/Icons/FileTypePdf'
 
 import BikeGoalChart from 'src/components/Goals/BikeGoal/BikeGoalChart'
 import { getBountyAmount } from 'src/components/Goals/BikeGoal/helpers'
+import {
+  isGenerated,
+  generateCertificate,
+  getCertificate
+} from 'src/components/Goals/BikeGoal/Certificate/helpers'
 
 import styles from 'src/components/Goals/BikeGoal/Certificate/CertificateGeneration.styl'
 
-const CertificateGenerationContent = () => {
+const CertificateGenerationContent = ({ certificate }) => {
   const { t } = useI18n()
   const { isMobile } = useBreakpoints()
   const { year } = useParams()
+  const [isBusy, setIsBusy] = useState(false)
+  const [selfCertificate, setSelfCertificate] = useState(() => certificate)
+
+  const showCertificate = () => {}
+
+  const handleCertificateGeneration = () => {
+    setSelfCertificate(null)
+    setIsBusy(true)
+    generateCertificate()
+  }
+
+  useEffect(() => {
+    if (certificate !== selfCertificate) {
+      setSelfCertificate(certificate)
+      setIsBusy(false)
+    }
+  }, [certificate, selfCertificate])
 
   return (
     <div className={styles['CertificateGeneration-root']}>
@@ -35,25 +57,30 @@ const CertificateGenerationContent = () => {
           year
         })}
       </Typography>
-      <Paper>
-        <List>
-          <ListItem>
-            <ListItemIcon>
-              <Icon icon={FileTypePdfIcon} size={32} />
-            </ListItemIcon>
-            <ListItemText
-              primary={t('bikeGoal.certificateGeneration.actions.show')}
-            />
-          </ListItem>
-        </List>
-      </Paper>
+      {!!certificate && (
+        <Paper>
+          <List>
+            <ListItem button onClick={showCertificate}>
+              <ListItemIcon>
+                <Icon icon={FileTypePdfIcon} size={32} />
+              </ListItemIcon>
+              <ListItemText
+                primary={t('bikeGoal.certificateGeneration.actions.show')}
+              />
+            </ListItem>
+          </List>
+        </Paper>
+      )}
       <Button
-        variant="text"
-        label={t('bikeGoal.certificateGeneration.actions.generate')}
         className="u-mt-half u-fz-xsmall"
-        onClick={() => {
-          // TODO
-        }}
+        variant="text"
+        label={
+          isGenerated()
+            ? t('bikeGoal.certificateGeneration.actions.generate_new')
+            : t('bikeGoal.certificateGeneration.actions.generate')
+        }
+        busy={isBusy}
+        onClick={handleCertificateGeneration}
       />
     </div>
   )
