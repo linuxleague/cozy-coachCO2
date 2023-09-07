@@ -10,7 +10,11 @@ import { filterTimeseriesByYear } from 'src/lib/timeseries'
 
 import { useI18n } from 'cozy-ui/transpiled/react/I18n'
 
-const BikeGoalViewDesktop = ({ timeseries, timeseriesQueryLeft }) => {
+const BikeGoalViewDesktop = ({
+  timeseries,
+  timeseriesQueryLeft,
+  sendToDACC
+}) => {
   const { t } = useI18n()
   const navigate = useNavigate()
   const { year } = useParams()
@@ -31,6 +35,7 @@ const BikeGoalViewDesktop = ({ timeseries, timeseriesQueryLeft }) => {
         top="2rem"
         right="2rem"
         timeseries={timeseriesByYear}
+        sendToDACC={sendToDACC}
       />
       <BikeGoalList
         className="u-mt-3"

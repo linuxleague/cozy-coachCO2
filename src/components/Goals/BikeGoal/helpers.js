@@ -74,3 +74,15 @@ export const makeIconSize = size => {
       return '4.5rem'
   }
 }
+
+// TODO mettre derrière le flag bikegoal.enabled
+export const getDaccAverageDays = () => 0.5
+
+export const makeDaccAchievementPercentage = () => {
+  const daccAverageDays = getDaccAverageDays()
+  const daysToReach = getDaysToReach()
+  const daysToUse =
+    daccAverageDays > daysToReach ? daysToReach : daccAverageDays
+
+  return Math.round((daysToUse / daysToReach) * 100)
+}
